@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="EncryptDecryptTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-08-18T14:24:58" hostname="LAPTOP-GE08A8NK" time="0.475">
+<testsuite name="EncryptDecryptTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-08-18T14:31:22" hostname="LAPTOP-GE08A8NK" time="0.398">
   <properties/>
-  <testcase name="start" classname="EncryptDecryptTest" time="0.475"/>
+  <testcase name="start" classname="EncryptDecryptTest" time="0.398"/>
   <system-out><![CDATA[\jqhtrj%yt%m~ujwxpnqq&
 Hello
 123456789

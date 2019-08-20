@@ -32,3 +32,5 @@ git.properties
 .gradle/
 
 gradle/
+
+build/

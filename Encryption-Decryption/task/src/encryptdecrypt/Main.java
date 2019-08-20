@@ -9,19 +9,27 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+
+interface Algorithm{
+    String encrypt(String text);
+    String decrypt(String text);
+}
+
 public class Main {
-    private static List<String> arguments = List.of("-mode","-data","-key", "-in", "-out");
+    private static List<String> arguments = List.of("-mode","-data","-key", "-in", "-out", "-alg");
     private static String mode;
     private static String data;
     private static int key;
     private static String inputFileName;
     private static String outputFileName;
+    private static Algorithm algo;
 
     public static void main(String[] args) {
         try{
             initialize(args);
-            outputData(mode.equals("dec") ? decrypt(data,key) : encrypt(data,key));
+            outputData(mode.equals("dec") ? algo.decrypt(data) : algo.encrypt(data));
         }catch(Exception e){
+            System.out.println("error!");
             System.out.println(e.getMessage());
         }
     }
@@ -61,8 +69,11 @@ public class Main {
                     case ("-out"):
                         outputFileName = args[i + 1];
                         break;
+                    case ("-alg"):
+                        algo = chooseAlgorithm(args[i + 1]);
+                        break;
                     default:
-                        continue;
+                        break;
                 }
             }
         }
@@ -80,24 +91,79 @@ public class Main {
         }
     }
 
-    private static String encrypt(String text, int offset){
-        return text.chars()
-                .mapToObj(e -> {
-                    e += offset;
-                    return (char) e;
-                })
-                .map(Object::toString)
-                .collect(Collectors.joining(""));
+    private static Algorithm chooseAlgorithm(String input){
+        Algorithm output;
+        switch (input){
+            case "shift":
+                output = new ShiftAlgorithm();
+                break;
+            case "unicode":
+            default:
+                output = new UnicodeAlgorithm();
+                break;
+        }
+        return output;
     }
 
-    private static String decrypt(String text, int offset){
-        return text.chars()
-                .mapToObj(e -> {
-                    e -= offset;
-                    return (char) e;
-                })
-                .map(Object::toString)
-                .collect(Collectors.joining(""));
+
+    private static class UnicodeAlgorithm implements Algorithm{
+        public String encrypt(String text){
+            return text.chars()
+                    .mapToObj(e -> {
+                        e += key;
+                        return (char) e;
+                    })
+                    .map(Object::toString)
+                    .collect(Collectors.joining(""));
+        }
+        public String decrypt(String text){
+            return text.chars()
+                    .mapToObj(e -> {
+                        e -= key;
+                        return (char) e;
+                    })
+                    .map(Object::toString)
+                    .collect(Collectors.joining(""));
+        }
+    }
+
+    private static class ShiftAlgorithm implements Algorithm{
+        public String encrypt(String text){
+            int localKey = key % 26;
+            char[] textCharArr = text.toCharArray();
+            char[] outputCharArr = new char[textCharArr.length];
+            for (int i = 0; i < textCharArr.length; i++){
+                char el = textCharArr[i];
+                if (el < 97 || el > 122){
+                    outputCharArr[i] = el;
+                }else{
+                    el += localKey;
+                    if (el > 122){
+                        el = (char) (96 + el % 122);
+                    }
+                    outputCharArr[i] = el;
+                }
+            }
+            return new String(outputCharArr);
+        }
+        public String decrypt(String text){
+            int localKey = key % 26;
+            char[] textCharArr = text.toCharArray();
+            char[] outputCharArr = new char[textCharArr.length];
+            for (int i = 0; i < textCharArr.length; i++){
+                char el = textCharArr[i];
+                if (el < 97 || el > 122){
+                    outputCharArr[i] = el;
+                }else{
+                    el -= localKey;
+                    if (el < 97){
+                        el = (char) (123 - 97 % el);
+                    }
+                    outputCharArr[i] = el;
+                }
+            }
+            return new String(outputCharArr);
+        }
     }
 
     private static String readFileAsString(String fileName) throws IOException {

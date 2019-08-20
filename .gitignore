@@ -33,6 +33,37 @@ git.properties
 
 gradle/
 
+
+#built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+
+# generated files
+bin/
+gen/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Windows thumbnail db
+Thumbs.db
+
+# OSX files
+.DS_Store
+
+# Android Studio
+*.iml
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.gradle
 build/
-C:\Users\CPburner\IdeaProjects\Encryption-Decryption\Encryption-Decryption\task\build\
-Encryption-Decryption/Encryption-Decryption/task/build/
+.navigation
+captures/
+output.json
+
+#NDK
+obj/
